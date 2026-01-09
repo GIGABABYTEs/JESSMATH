@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>JESSMATH</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="squad-list">
+        <div style="color:var(--neon-gold); font-weight:bold; border-bottom:1px solid #555; margin-bottom:5px;">SQUAD LIVE</div>
+        <div id="squad-content">Waiting...</div>
+    </div>
+
+    <div id="error-console"></div>
+    <div id="boss-warning">⚠️ ALGEBRA BOSS INCOMING! ⚠️</div>
+
+    <div id="game-ui">
+        <div class="top-bar">
+            <div class="hud-panel">
+                <span style="color:var(--neon-blue)">LVL <span id="level-txt">1</span></span>
+                <span style="color:var(--neon-red)">HP <span id="health-txt">100%</span></span>
+                <span style="color:var(--neon-green)">PTS <span id="score-txt">0</span></span>
+            </div>
+            <div class="controls-panel">
+                <button class="icon-btn" onclick="window.toggleMute()"><span id="mute-btn">🔊</span></button>
+                <button class="icon-btn" onclick="window.togglePause()">II</button>
+            </div>
+        </div>
+        
+        <div id="input-container">
+            <form id="game-form" onsubmit="return false;">
+                <input type="tel" id="player-input" autocomplete="off" placeholder="?">
+            </form>
+            <div style="color: var(--neon-blue); margin-top:10px; font-size: 14px; letter-spacing: 2px; text-shadow: 0 0 5px var(--neon-blue);">
+                TYPE ANSWER & ENTER
+            </div>
+        </div>
+    </div>
+
+    <div id="start-modal" class="modal">
+        <div class="modal-content">
+            <h1>MATH <span>DEFENDER</span></h1>
+            
+            <input type="text" id="my-name" class="name-input" placeholder="ENTER AGENT NAME" maxlength="10">
+            
+            <div class="settings-box" style="margin-top: 20px;">
+                <h3 style="color:var(--neon-gold); margin: 0 0 10px 0; font-size: 18px;">THREAT LEVEL</h3>
+                <div class="checkbox-group">
+                    <label class="op-btn"><input type="radio" name="diff" value="easy"><span>EZ</span></label>
+                    <label class="op-btn"><input type="radio" name="diff" value="medium" checked><span>NRM</span></label>
+                    <label class="op-btn"><input type="radio" name="diff" value="hard"><span>HRD</span></label>
+                </div>
+            </div>
+
+            <div class="settings-box">
+                <h3 style="color:var(--neon-blue); margin: 0 0 10px 0; font-size: 18px;">WEAPON SYSTEMS</h3>
+                <div class="checkbox-group">
+                    <label class="op-btn"><input type="checkbox" id="opt-add" checked><span>+</span></label>
+                    <label class="op-btn"><input type="checkbox" id="opt-sub" checked><span>-</span></label>
+                    <label class="op-btn"><input type="checkbox" id="opt-mul"><span>x</span></label>
+                    <label class="op-btn"><input type="checkbox" id="opt-div"><span>÷</span></label>
+                    <label class="op-btn"><input type="checkbox" id="opt-alg"><span>Alg</span></label>
+                </div>
+            </div>
+
+            <br>
+            <button class="btn" onclick="window.startSolo()">PLAY SOLO MISSION</button>
+            <button class="btn btn-secondary" onclick="window.showMultiplayerMenu()">SQUAD / MULTIPLAYER</button>
+            <button class="btn btn-secondary" style="background:#222; margin-top:10px; font-size: 16px;" onclick="window.showLeaderboard()">LEADERBOARD</button>
+        </div>
+    </div>
+
+    <div id="mp-menu-modal" class="modal hidden">
+        <div class="modal-content">
+            <h1 style="color:var(--neon-blue)">SQUAD <span>UPLINK</span></h1>
+            
+            <p style="color:#aaa">CREATE A ROOM WITH SELECTED SETTINGS<br>OR JOIN AN EXISTING SQUAD.</p>
+            <br>
+
+            <button class="btn" onclick="window.createRoom()">CREATE NEW ROOM</button>
+            
+            <div style="margin: 30px 0; border-top: 1px solid #333; padding-top: 30px;">
+                <div style="margin-bottom: 10px; color: var(--neon-gold); font-weight: bold;">JOIN EXISTING SQUAD</div>
+                <input type="text" id="join-code-input" class="name-input" placeholder="ENTER 4-DIGIT CODE" maxlength="4" style="text-transform:uppercase">
+                <button class="btn btn-secondary" onclick="window.joinRoom()">JOIN SQUAD</button>
+            </div>
+            
+            <button class="btn btn-secondary" style="background:#222" onclick="window.location.reload()">BACK</button>
+        </div>
+    </div>
+
+    <div id="lobby-modal" class="modal hidden">
+        <div class="modal-content">
+            <h2 style="color:var(--neon-green)">WAITING FOR AGENTS...</h2>
+            <div style="color:#aaa">SHARE THIS CODE:</div>
+            <div id="room-code-display">----</div>
+            <div id="lobby-players"></div>
+            
+            <button id="host-start-btn" class="btn hidden" onclick="window.hostStartGame()">LAUNCH MISSION</button>
+            <div id="client-wait-msg" class="hidden" style="color:var(--neon-blue); animation: blink 1s infinite;">WAITING FOR HOST TO START...</div>
+        </div>
+    </div>
+
+    <div id="leaderboard-modal" class="modal hidden">
+        <div class="modal-content">
+            <h1 style="color:var(--neon-gold)">TOP <span>AGENTS</span></h1>
+            <div id="leaderboard-list">Loading...</div>
+            <button class="btn btn-secondary" onclick="window.goHome()">BACK TO BASE</button>
+        </div>
+    </div>
+
+    <div id="pause-modal" class="modal hidden">
+        <div class="modal-content">
+            <h1>PAUSED</h1>
+            <button class="btn" onclick="window.togglePause()">RESUME</button>
+            <button class="btn btn-secondary" onclick="window.goHome()">ABORT MISSION</button>
+        </div>
+    </div>
+
+    <div id="report-modal" class="modal hidden">
+        <div class="modal-content">
+            <h1 style="color: var(--neon-red)">CITY DESTROYED</h1>
+            
+            <div style="margin: 20px 0; font-size: 18px; color: #ccc;">
+                <p>Score: <span id="rep-score" style="color:white; font-weight:bold; font-size: 30px;">0</span></p>
+                <p>Enemies Defeated: <span id="rep-solved" style="color:white; font-weight:bold">0</span></p>
+            </div>
+            
+            <div id="submit-area">
+                <input type="text" id="username-input" class="name-input" placeholder="CONFIRM CODENAME" maxlength="10">
+                <button id="real-submit-btn" class="btn" onclick="window.submitScore()">UPLOAD SCORE</button>
+            </div>
+            
+            <button id="view-mistakes-btn" class="btn btn-secondary" onclick="window.toggleMistakes()">VIEW MISTAKES</button>
+            <div id="mistakes-log"></div>
+            
+            <button class="btn" onclick="window.startGame()">RETRY MISSION</button>
+            <button class="btn btn-secondary" onclick="window.goHome()">RETURN TO BASE</button>
+        </div>
+    </div>
+
+    <canvas id="gameCanvas"></canvas>
+
+    <script type="module" src="script.js"></script>
+
+</body>
+</html>
